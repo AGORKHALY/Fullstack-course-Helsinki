@@ -165,88 +165,52 @@
 
 // export default App
 
-import { useState } from "react";
+// 
 
-const Button = ({ onClick, text }) => {
-  return (
-    <button onClick={onClick}>
-      {text}
-    </button>
-  )
-}
-
-const StatisticLine = ({ text, value }) => {
-  return (
-    <tr>
-      <td>{text}</td>
-      <td>{value}</td>
-    </tr>
-  )
-}
-
-const Statistics = ({ good, neutral, bad }) => {
-  const total = good + neutral + bad
-  const average = (good - bad) / total
-  const positive = (good / total) * 100
-
-  if (total === 0) {
-    return (
-      <div>
-        No feedback given
-      </div>
-    )
-  }
-
-  return (
-    <div>
-      <h1>statistics</h1>
-      <table>
-        <tbody>
-          <StatisticLine text='good' value={good} />
-          <StatisticLine text='neutral' value={neutral} />
-          <StatisticLine text='bad' value={bad} />
-          <StatisticLine text='all' value={total} />
-          <StatisticLine text='average' value={average} />
-          <StatisticLine text='positive' value={positive + '%'} />
-        </tbody>
-      </table>
-    </div>
-  )
-}
+import { useState } from 'react'
 
 const App = () => {
-  const [good, setGood] = useState(0);
-  const [neutral, setNeutral] = useState(0);
-  const [bad, setBad] = useState(0);
-  const [total, setTotal] = useState(0);
+  const anecdotes = [
+    'If it hurts, do it more often.',
+    'Adding manpower to a late software project makes it later!',
+    'The first 90 percent of the code accounts for the first 90 percent of the development time...The remaining 10 percent of the code accounts for the other 90 percent of the development time.',
+    'Any fool can write code that a computer can understand. Good programmers write code that humans can understand.',
+    'Premature optimization is the root of all evil.',
+    'Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.',
+    'Programming without an extremely heavy use of console.log is same as if a doctor would refuse to use x-rays or blood tests when diagnosing patients.',
+    'The only way to go fast, is to go well.'
+  ]
 
-  const handleGood = () => {
-    const updatedGood = good + 1
-    setGood(updatedGood)
-    setTotal(updatedGood + neutral + bad)
+  const [selected, setSelected] = useState(0)
+  const [votes, setVotes] = useState(new Array(anecdotes.length).fill(0))
+
+  const handleRandomNum = () => {
+    setSelected(Math.floor(Math.random() * anecdotes.length))
   }
 
-  const handleNeutral = () => {
-    const updatedNeutral = neutral + 1
-    setNeutral(updatedNeutral)
-    setTotal(updatedNeutral + good + bad)
+  const handleVote = () => {
+    const copy = [...votes]
+    copy[selected] += 1
+    setVotes(copy)
   }
 
-  const handleBad = () => {
-    const updatedBad = bad + 1
-    setBad(updatedBad)
-    setTotal(updatedBad + good + neutral)
-  }
+  const max = Math.max(...votes)
+  const index = votes.indexOf(max)
 
   return (
     <div>
-      <h1>give feedback</h1>
-      <Button onClick={handleGood} text='good' />
-      <Button onClick={handleNeutral} text='neutral' />
-      <Button onClick={handleBad} text='bad' />
-      <Statistics good={good} neutral={neutral} bad={bad} />
+      <h1>Anecdote of the day</h1>
+      <div>{anecdotes[selected]}</div>
+      <div>has {votes[selected]} votes</div>
+      <button onClick={handleVote}>vote</button>
+      <button onClick={handleRandomNum}>next anecdote</button>
+      <div>
+        <h1>Anecdote with most votes</h1>
+        <div>{anecdotes[index]}</div>
+        <div>has {votes[index]} votes</div>
+      </div>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
